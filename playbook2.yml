@@ -1,0 +1,37 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates (Raspberry Pi OS)
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Debian"
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+  - name: install apache2 and php packages for Raspberry Pi OS (Debian/Bullseye)
+    tags: debian,apache2,php
+    package:
+      name: 
+         - apache2
+         - libapache2-mod-php
+      state: latest
+    when: ansible_distribution == "Debian"
+
+- hosts: db_servers
+  become: true
+  tasks:
+  
+  - name: install MariaDB
+    tags: debian,mariadb
+    package:
+      name:
+         - mariadb-server
+      state: latest
+    when: ansible_distribution == "Debian"
